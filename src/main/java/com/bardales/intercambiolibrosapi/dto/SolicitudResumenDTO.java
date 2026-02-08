@@ -1,0 +1,83 @@
+package com.bardales.intercambiolibrosapi.dto;
+
+import java.time.LocalDateTime;
+
+public class SolicitudResumenDTO {
+    private Integer idSolicitud;
+    private String tituloLibro;
+    private String nombreContraparte;
+    private String tipo;
+    private String estado;
+    private LocalDateTime fechaSolicitud;
+    private String urlImagen;
+
+    public SolicitudResumenDTO() {
+    }
+
+    public SolicitudResumenDTO(Integer idSolicitud, String tituloLibro, String nombreContraparte, String tipo,
+            String estado, LocalDateTime fechaSolicitud, String urlImagen) {
+        this.idSolicitud = idSolicitud;
+        this.tituloLibro = tituloLibro;
+        this.nombreContraparte = nombreContraparte;
+        this.tipo = tipo;
+        this.estado = estado;
+        this.fechaSolicitud = fechaSolicitud;
+        this.urlImagen = urlImagen;
+    }
+
+    public Integer getIdSolicitud() {
+        return idSolicitud;
+    }
+
+    public void setIdSolicitud(Integer idSolicitud) {
+        this.idSolicitud = idSolicitud;
+    }
+
+    public String getTituloLibro() {
+        return tituloLibro;
+    }
+
+    public void setTituloLibro(String tituloLibro) {
+        this.tituloLibro = tituloLibro;
+    }
+
+    public String getNombreContraparte() {
+        return nombreContraparte;
+    }
+
+    public void setNombreContraparte(String nombreContraparte) {
+        this.nombreContraparte = nombreContraparte;
+    }
+
+    public String getTipo() {
+        return tipo;
+    }
+
+    public void setTipo(String tipo) {
+        this.tipo = tipo;
+    }
+
+    public String getEstado() {
+        return estado;
+    }
+
+    public void setEstado(String estado) {
+        this.estado = estado;
+    }
+
+    public LocalDateTime getFechaSolicitud() {
+        return fechaSolicitud;
+    }
+
+    public void setFechaSolicitud(LocalDateTime fechaSolicitud) {
+        this.fechaSolicitud = fechaSolicitud;
+    }
+
+    public String getUrlImagen() {
+        return urlImagen;
+    }
+
+    public void setUrlImagen(String urlImagen) {
+        this.urlImagen = urlImagen;
+    }
+}

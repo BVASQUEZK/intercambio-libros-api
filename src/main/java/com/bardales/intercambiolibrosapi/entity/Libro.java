@@ -1,0 +1,152 @@
+package com.bardales.intercambiolibrosapi.entity;
+
+import java.time.LocalDateTime;
+import java.util.ArrayList;
+import java.util.List;
+
+import jakarta.persistence.Column;
+import jakarta.persistence.Entity;
+import jakarta.persistence.FetchType;
+import jakarta.persistence.GeneratedValue;
+import jakarta.persistence.GenerationType;
+import jakarta.persistence.Id;
+import jakarta.persistence.JoinColumn;
+import jakarta.persistence.ManyToOne;
+import jakarta.persistence.OneToMany;
+import jakarta.persistence.Table;
+
+@Entity
+@Table(name = "libro")
+public class Libro {
+
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Column(name = "id_libro")
+    private Integer idLibro;
+
+    @Column(name = "id_usuario", nullable = false)
+    private Integer idUsuario;
+
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "id_categoria")
+    private Categoria categoria;
+
+    @Column(name = "titulo", nullable = false, length = 150)
+    private String titulo;
+
+    @Column(name = "autor", length = 150)
+    private String autor;
+
+    @Column(name = "descripcion")
+    private String descripcion;
+
+    @Column(name = "estado")
+    private String estado;
+
+    @Column(name = "disponible")
+    private Boolean disponible;
+
+    @Column(name = "fecha_registro", updatable = false)
+    private LocalDateTime fechaRegistro;
+
+    @OneToMany(mappedBy = "libro", fetch = FetchType.LAZY)
+    private List<ImagenLibro> imagenes = new ArrayList<>();
+
+    public Libro() {
+    }
+
+    public Libro(Integer idLibro, Integer idUsuario, Categoria categoria, String titulo, String autor,
+            String descripcion, String estado, Boolean disponible, LocalDateTime fechaRegistro,
+            List<ImagenLibro> imagenes) {
+        this.idLibro = idLibro;
+        this.idUsuario = idUsuario;
+        this.categoria = categoria;
+        this.titulo = titulo;
+        this.autor = autor;
+        this.descripcion = descripcion;
+        this.estado = estado;
+        this.disponible = disponible;
+        this.fechaRegistro = fechaRegistro;
+        this.imagenes = imagenes;
+    }
+
+    public Integer getIdLibro() {
+        return idLibro;
+    }
+
+    public void setIdLibro(Integer idLibro) {
+        this.idLibro = idLibro;
+    }
+
+    public Integer getIdUsuario() {
+        return idUsuario;
+    }
+
+    public void setIdUsuario(Integer idUsuario) {
+        this.idUsuario = idUsuario;
+    }
+
+    public Categoria getCategoria() {
+        return categoria;
+    }
+
+    public void setCategoria(Categoria categoria) {
+        this.categoria = categoria;
+    }
+
+    public String getTitulo() {
+        return titulo;
+    }
+
+    public void setTitulo(String titulo) {
+        this.titulo = titulo;
+    }
+
+    public String getAutor() {
+        return autor;
+    }
+
+    public void setAutor(String autor) {
+        this.autor = autor;
+    }
+
+    public String getDescripcion() {
+        return descripcion;
+    }
+
+    public void setDescripcion(String descripcion) {
+        this.descripcion = descripcion;
+    }
+
+    public String getEstado() {
+        return estado;
+    }
+
+    public void setEstado(String estado) {
+        this.estado = estado;
+    }
+
+    public Boolean getDisponible() {
+        return disponible;
+    }
+
+    public void setDisponible(Boolean disponible) {
+        this.disponible = disponible;
+    }
+
+    public LocalDateTime getFechaRegistro() {
+        return fechaRegistro;
+    }
+
+    public void setFechaRegistro(LocalDateTime fechaRegistro) {
+        this.fechaRegistro = fechaRegistro;
+    }
+
+    public List<ImagenLibro> getImagenes() {
+        return imagenes;
+    }
+
+    public void setImagenes(List<ImagenLibro> imagenes) {
+        this.imagenes = imagenes;
+    }
+}

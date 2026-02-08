@@ -1,0 +1,9 @@
+﻿-- =========================================
+-- EJECUTAR SISTEMA COMPLETO DE SP
+-- =========================================
+SOURCE 01-Usuario/EJECUTAR_TODOS_SP_USUARIO.sql;
+SOURCE 02-Libro/EJECUTAR_TODOS_SP_LIBRO.sql;
+SOURCE 03-Categoria/EJECUTAR_TODOS_SP_CATEGORIA.sql;
+SOURCE 04-Solicitud/EJECUTAR_TODOS_SP_SOLICITUD.sql;
+SOURCE 05-Resena/EJECUTAR_TODOS_SP_RESENA.sql;
+SOURCE 06-Mensaje/EJECUTAR_TODOS_SP_MENSAJE.sql;
