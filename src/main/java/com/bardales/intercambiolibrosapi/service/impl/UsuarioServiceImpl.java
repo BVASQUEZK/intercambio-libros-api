@@ -10,15 +10,21 @@ import com.bardales.intercambiolibrosapi.repository.LoginResponseProjection;
 import com.bardales.intercambiolibrosapi.repository.UsuarioRepository;
 import com.bardales.intercambiolibrosapi.service.UsuarioService;
 
+import java.util.List;
+import java.util.Map;
+
+import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.stereotype.Service;
 
 @Service
 public class UsuarioServiceImpl implements UsuarioService {
 
     private final UsuarioRepository usuarioRepository;
+    private final JdbcTemplate jdbcTemplate;
 
-    public UsuarioServiceImpl(UsuarioRepository usuarioRepository) {
+    public UsuarioServiceImpl(UsuarioRepository usuarioRepository, JdbcTemplate jdbcTemplate) {
         this.usuarioRepository = usuarioRepository;
+        this.jdbcTemplate = jdbcTemplate;
     }
 
     @Override
@@ -65,5 +71,20 @@ public class UsuarioServiceImpl implements UsuarioService {
             urlFoto = "default_user.png";
         }
         return new LoginResponseDTO(usuario.getNombres(), usuario.getApellidos(), urlFoto);
+    }
+
+    @Override
+    public Map<String, Object> registrarUsuario(String nombre, String correo, String clave) {
+        List<Map<String, Object>> rows = jdbcTemplate.queryForList(
+                "CALL sp_registrar_usuario_app(?, ?, ?)", nombre, correo, clave);
+        if (rows.isEmpty()) {
+            throw new ResourceNotFoundException("No se pudo registrar el usuario");
+        }
+        Map<String, Object> row = rows.get(0);
+        Number idUsuario = (Number) row.get("id_usuario");
+        if (idUsuario == null || idUsuario.intValue() <= 0) {
+            throw new ResourceNotFoundException("Correo ya registrado");
+        }
+        return Map.of("mensaje", "REGISTRO_OK", "id_usuario", idUsuario.intValue());
     }
 }
