@@ -1,5 +1,7 @@
 package com.bardales.intercambiolibrosapi.entity;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
+
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.FetchType;
@@ -19,6 +21,7 @@ public class ImagenLibro {
     @Column(name = "id_imagen")
     private Integer idImagen;
 
+    @JsonBackReference
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "id_libro")
     private Libro libro;
