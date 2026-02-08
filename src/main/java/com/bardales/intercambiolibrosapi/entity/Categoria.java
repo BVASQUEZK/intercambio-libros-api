@@ -1,4 +1,4 @@
-package com.bardales.intercambiolibrosapi.entity;
+﻿package com.bardales.intercambiolibrosapi.entity;
 
 import java.util.ArrayList;
 import java.util.List;
