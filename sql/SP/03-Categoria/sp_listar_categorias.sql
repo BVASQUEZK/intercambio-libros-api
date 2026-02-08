@@ -1,11 +1,12 @@
 ﻿-- =========================================
 -- SP: Listar Categorias
 -- =========================================
-DELIMITER $$
+DELIMITER //
 CREATE PROCEDURE sp_listar_categorias()
 BEGIN
-    SELECT id_categoria, nombre
-    FROM categoria
-    ORDER BY nombre ASC;
-END $$
+    SELECT c.id_categoria AS id_categoria,
+           c.nombre AS nombre
+    FROM categoria c
+    ORDER BY c.nombre ASC;
+END //
 DELIMITER ;

@@ -1,7 +1,9 @@
-package com.bardales.intercambiolibrosapi.entity;
+﻿package com.bardales.intercambiolibrosapi.entity;
 
 import java.util.ArrayList;
 import java.util.List;
+
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
@@ -23,6 +25,7 @@ public class Categoria {
     @Column(name = "nombre", length = 100)
     private String nombre;
 
+    @JsonIgnoreProperties("categoria")
     @OneToMany(mappedBy = "categoria")
     private List<Libro> libros = new ArrayList<>();
 
