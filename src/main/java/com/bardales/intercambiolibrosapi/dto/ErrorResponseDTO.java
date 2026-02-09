@@ -6,6 +6,7 @@ public class ErrorResponseDTO {
     private LocalDateTime timestamp;
     private String mensaje;
     private String codigoError;
+    private String errorCode;
 
     public ErrorResponseDTO() {
     }
@@ -14,6 +15,14 @@ public class ErrorResponseDTO {
         this.timestamp = timestamp;
         this.mensaje = mensaje;
         this.codigoError = codigoError;
+        this.errorCode = codigoError;
+    }
+
+    public ErrorResponseDTO(LocalDateTime timestamp, String mensaje, String codigoError, String errorCode) {
+        this.timestamp = timestamp;
+        this.mensaje = mensaje;
+        this.codigoError = codigoError;
+        this.errorCode = errorCode;
     }
 
     public LocalDateTime getTimestamp() {
@@ -38,5 +47,13 @@ public class ErrorResponseDTO {
 
     public void setCodigoError(String codigoError) {
         this.codigoError = codigoError;
+    }
+
+    public String getErrorCode() {
+        return errorCode;
+    }
+
+    public void setErrorCode(String errorCode) {
+        this.errorCode = errorCode;
     }
 }

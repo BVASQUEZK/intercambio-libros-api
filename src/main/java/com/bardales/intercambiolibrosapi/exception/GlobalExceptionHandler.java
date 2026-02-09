@@ -23,8 +23,14 @@ public class GlobalExceptionHandler {
 
     @ExceptionHandler(UnauthorizedException.class)
     public ResponseEntity<ErrorResponseDTO> handleUnauthorized(UnauthorizedException ex) {
-        ErrorResponseDTO body = new ErrorResponseDTO(LocalDateTime.now(), ex.getMessage(), "UNAUTHORIZED");
+        ErrorResponseDTO body = new ErrorResponseDTO(LocalDateTime.now(), ex.getMessage(), "UNAUTHORIZED", "AUTH_001");
         return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(body);
+    }
+
+    @ExceptionHandler(ForbiddenException.class)
+    public ResponseEntity<ErrorResponseDTO> handleForbidden(ForbiddenException ex) {
+        ErrorResponseDTO body = new ErrorResponseDTO(LocalDateTime.now(), ex.getMessage(), "FORBIDDEN", "AUTH_002");
+        return ResponseEntity.status(HttpStatus.FORBIDDEN).body(body);
     }
 
     @ExceptionHandler(MethodArgumentNotValidException.class)

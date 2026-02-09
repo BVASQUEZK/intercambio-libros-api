@@ -4,6 +4,7 @@ import com.bardales.intercambiolibrosapi.dto.LoginResponseDTO;
 import com.bardales.intercambiolibrosapi.dto.PerfilUsuarioDTO;
 import com.bardales.intercambiolibrosapi.dto.UsuarioUpdateDTO;
 import com.bardales.intercambiolibrosapi.entity.Usuario;
+import com.bardales.intercambiolibrosapi.exception.ForbiddenException;
 import com.bardales.intercambiolibrosapi.exception.ResourceNotFoundException;
 import com.bardales.intercambiolibrosapi.exception.UnauthorizedException;
 import com.bardales.intercambiolibrosapi.repository.UsuarioRepository;
@@ -29,26 +30,26 @@ public class UsuarioServiceImpl implements UsuarioService {
 
     @Override
     public LoginResponseDTO login(String correo, String password) {
-        List<Map<String, Object>> rows = jdbcTemplate.queryForList(
-                "CALL sp_login_usuario_app(?, ?)", correo, password);
-        if (rows.isEmpty()) {
-            throw new ResourceNotFoundException("Credenciales invalidas");
+        List<com.bardales.intercambiolibrosapi.repository.LoginUsuarioAppProjection> rows =
+                usuarioRepository.loginUsuarioApp(correo, password);
+        if (rows == null || rows.isEmpty()) {
+            throw new UnauthorizedException("Credenciales invalidas");
         }
-        Map<String, Object> row = rows.get(0);
-        Number idUsuario = (Number) (row.containsKey("id_usuario")
-                ? row.get("id_usuario")
-                : row.get("idUsuario"));
-        String nombre = row.get("nombre") == null ? null : row.get("nombre").toString();
-        if (nombre == null) {
-            String nombres = row.get("nombres") == null ? null : row.get("nombres").toString();
-            String apellidos = row.get("apellidos") == null ? null : row.get("apellidos").toString();
-            if (nombres != null && apellidos != null) {
-                nombre = (nombres + " " + apellidos).trim();
-            } else if (nombres != null) {
-                nombre = nombres;
-            } else if (apellidos != null) {
-                nombre = apellidos;
-            }
+        var row = rows.get(0);
+        Integer idUsuario = row.getIdUsuario();
+        String nombres = row.getNombres();
+        String apellidos = row.getApellidos();
+        String estado = row.getEstado();
+        if (estado != null && !"activo".equalsIgnoreCase(estado)) {
+            throw new ForbiddenException("Usuario suspendido");
+        }
+        String nombre = null;
+        if (nombres != null && apellidos != null) {
+            nombre = (nombres + " " + apellidos).trim();
+        } else if (nombres != null) {
+            nombre = nombres;
+        } else if (apellidos != null) {
+            nombre = apellidos;
         }
         String token = UUID.randomUUID().toString();
         return new LoginResponseDTO(idUsuario == null ? null : idUsuario.intValue(), nombre, token);
