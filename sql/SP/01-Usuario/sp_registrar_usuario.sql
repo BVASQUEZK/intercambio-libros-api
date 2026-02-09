@@ -1,18 +1,17 @@
-﻿-- =========================================
--- SP: Registrar Usuario
+-- =========================================
+-- SP: Registrar Usuario App
 -- =========================================
 DELIMITER $$
-CREATE PROCEDURE sp_registrar_usuario(
+CREATE PROCEDURE sp_registrar_usuario_app(
     IN p_nombres VARCHAR(100),
     IN p_apellidos VARCHAR(100),
-    IN p_dni VARCHAR(15),
     IN p_correo VARCHAR(120),
-    IN p_telefono VARCHAR(20),
-    IN p_password VARCHAR(255),
-    IN p_url_foto_perfil VARCHAR(500)
+    IN p_password VARCHAR(255)
 )
 BEGIN
-    INSERT INTO usuario (nombres, apellidos, dni, correo, telefono, password, url_foto_perfil)
-    VALUES (p_nombres, p_apellidos, p_dni, p_correo, p_telefono, p_password, p_url_foto_perfil);
+    INSERT INTO usuario (nombres, apellidos, correo, password)
+    VALUES (p_nombres, p_apellidos, p_correo, p_password);
+
+    SELECT LAST_INSERT_ID() AS id_usuario;
 END $$
 DELIMITER ;

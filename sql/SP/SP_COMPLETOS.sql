@@ -1,10 +1,78 @@
-Ôªø-- =========================================
+-- =========================================
 -- SP COMPLETOS - intercambiolibrosapi
 -- =========================================
 USE intercambio_libros;
 
 -- =========================================
--- M√ìDULO CATEGOR√çA: sp_listar_categorias
+-- ELIMINAR SP (USUARIO, CATEGORIA, LIBRO)
+-- =========================================
+DROP PROCEDURE IF EXISTS sp_login_usuario_app;
+DROP PROCEDURE IF EXISTS sp_registrar_usuario_app;
+DROP PROCEDURE IF EXISTS sp_actualizar_perfil;
+DROP PROCEDURE IF EXISTS sp_listar_categorias;
+DROP PROCEDURE IF EXISTS sp_registrar_libro;
+DROP PROCEDURE IF EXISTS sp_listar_libros_recientes;
+DROP PROCEDURE IF EXISTS sp_buscar_libros_filtros;
+DROP PROCEDURE IF EXISTS sp_vincular_imagen_libro;
+
+-- =========================================
+-- M”DULO USUARIO: sp_login_usuario_app
+-- =========================================
+DELIMITER $$
+CREATE PROCEDURE sp_login_usuario_app(
+    IN p_correo VARCHAR(120),
+    IN p_password VARCHAR(255)
+)
+BEGIN
+    SELECT id_usuario,
+           nombres,
+           apellidos,
+           correo
+    FROM usuario
+    WHERE correo = p_correo
+      AND password = p_password;
+END $$
+DELIMITER ;
+
+-- =========================================
+-- M”DULO USUARIO: sp_registrar_usuario_app
+-- =========================================
+DELIMITER $$
+CREATE PROCEDURE sp_registrar_usuario_app(
+    IN p_nombres VARCHAR(100),
+    IN p_apellidos VARCHAR(100),
+    IN p_correo VARCHAR(120),
+    IN p_password VARCHAR(255)
+)
+BEGIN
+    INSERT INTO usuario (nombres, apellidos, correo, password)
+    VALUES (p_nombres, p_apellidos, p_correo, p_password);
+
+    SELECT LAST_INSERT_ID() AS id_usuario;
+END $$
+DELIMITER ;
+
+-- =========================================
+-- M”DULO USUARIO: sp_actualizar_perfil
+-- =========================================
+DELIMITER $$
+CREATE PROCEDURE sp_actualizar_perfil(
+    IN p_id_usuario INT,
+    IN p_nombres VARCHAR(100),
+    IN p_apellidos VARCHAR(100),
+    IN p_url_foto VARCHAR(500)
+)
+BEGIN
+    UPDATE usuario
+    SET nombres = p_nombres,
+        apellidos = p_apellidos,
+        url_foto_perfil = p_url_foto
+    WHERE id_usuario = p_id_usuario;
+END $$
+DELIMITER ;
+
+-- =========================================
+-- M”DULO CATEGORÕA: sp_listar_categorias
 -- =========================================
 DELIMITER //
 CREATE PROCEDURE sp_listar_categorias()
@@ -17,128 +85,104 @@ END //
 DELIMITER ;
 
 -- =========================================
--- M√ìDULO USUARIO: sp_login_usuario
+-- M”DULO LIBRO: sp_registrar_libro
 -- =========================================
-DELIMITER //
-CREATE PROCEDURE sp_login_usuario(
-    IN p_email VARCHAR(120),
-    IN p_password VARCHAR(255)
+DELIMITER $$
+CREATE PROCEDURE sp_registrar_libro(
+    IN p_id_usuario INT,
+    IN p_id_categoria INT,
+    IN p_titulo VARCHAR(150),
+    IN p_autor VARCHAR(150),
+    IN p_descripcion TEXT,
+    IN p_estado ENUM('nuevo','muy bueno','bueno','aceptable'),
+    IN p_url_imagen VARCHAR(500),
+    OUT p_id_libro INT
 )
 BEGIN
-    SELECT id_usuario,
-           nombres,
-           apellidos,
-           correo,
-           telefono,
-           url_foto_perfil,
-           fecha_registro,
-           estado
-    FROM usuario
-    WHERE correo = p_email
-      AND password = p_password
-      AND estado = 'activo';
-END //
+    INSERT INTO libro (id_usuario, id_categoria, titulo, autor, descripcion, estado)
+    VALUES (p_id_usuario, p_id_categoria, p_titulo, p_autor, p_descripcion, p_estado);
+
+    SET p_id_libro = LAST_INSERT_ID();
+
+    INSERT INTO imagen_libro (id_libro, url_imagen)
+    VALUES (p_id_libro, p_url_imagen);
+END $$
 DELIMITER ;
 
 -- =========================================
--- M√ìDULO USUARIO: sp_registrar_usuario
+-- M”DULO LIBRO: sp_listar_libros_recientes
 -- =========================================
-DELIMITER //
-CREATE PROCEDURE sp_registrar_usuario(
-    IN p_nombres VARCHAR(100),
-    IN p_apellidos VARCHAR(100),
-    IN p_dni VARCHAR(15),
-    IN p_correo VARCHAR(120),
-    IN p_telefono VARCHAR(20),
-    IN p_password VARCHAR(255),
-    IN p_url_foto_perfil VARCHAR(500)
-)
-BEGIN
-    INSERT INTO usuario (nombres, apellidos, dni, correo, telefono, password, url_foto_perfil)
-    VALUES (p_nombres, p_apellidos, p_dni, p_correo, p_telefono, p_password, p_url_foto_perfil);
-END //
-DELIMITER ;
-
--- =========================================
--- M√ìDULO LIBRO: sp_listar_libros_recientes
--- =========================================
-DELIMITER //
+DELIMITER $$
 CREATE PROCEDURE sp_listar_libros_recientes(
     IN p_limit INT,
     IN p_offset INT
 )
 BEGIN
-    SELECT l.id_libro,
-           l.titulo,
-           l.autor,
-           l.descripcion,
-           l.estado,
-           l.disponible,
-           l.fecha_registro,
-           c.id_categoria,
-           c.nombre AS categoria,
-           u.id_usuario,
-           u.nombres,
-           u.apellidos,
-           u.url_foto_perfil,
+    SELECT l.id_libro AS id_libro,
+           l.titulo AS titulo,
+           l.autor AS autor,
            img.url_imagen AS url_portada
     FROM libro l
-    INNER JOIN usuario u ON u.id_usuario = l.id_usuario
-    LEFT JOIN categoria c ON c.id_categoria = l.id_categoria
     LEFT JOIN (
         SELECT i.id_libro, MIN(i.id_imagen) AS id_imagen
         FROM imagen_libro i
         GROUP BY i.id_libro
     ) img_min ON img_min.id_libro = l.id_libro
     LEFT JOIN imagen_libro img ON img.id_imagen = img_min.id_imagen
-    WHERE l.disponible = TRUE
     ORDER BY l.fecha_registro DESC
     LIMIT p_limit OFFSET p_offset;
-END //
+END $$
 DELIMITER ;
 
 -- =========================================
--- M√ìDULO LIBRO: sp_buscar_libros
+-- M”DULO LIBRO: sp_buscar_libros_filtros
 -- =========================================
-DELIMITER //
-CREATE PROCEDURE sp_buscar_libros(
-    IN p_query VARCHAR(150),
+DELIMITER $$
+CREATE PROCEDURE sp_buscar_libros_filtros(
+    IN p_titulo VARCHAR(150),
+    IN p_autor VARCHAR(150),
+    IN p_id_categoria INT,
+    IN p_estado ENUM('nuevo','muy bueno','bueno','aceptable'),
     IN p_limit INT,
     IN p_offset INT
 )
 BEGIN
-    SELECT l.id_libro,
-           l.titulo,
-           l.autor,
-           l.descripcion,
-           l.estado,
-           l.disponible,
-           l.fecha_registro,
-           c.id_categoria,
-           c.nombre AS categoria,
-           u.id_usuario,
-           u.nombres,
-           u.apellidos,
-           u.url_foto_perfil,
+    SELECT l.id_libro AS id_libro,
+           l.titulo AS titulo,
+           l.autor AS autor,
            img.url_imagen AS url_portada
     FROM libro l
-    INNER JOIN usuario u ON u.id_usuario = l.id_usuario
-    LEFT JOIN categoria c ON c.id_categoria = l.id_categoria
     LEFT JOIN (
         SELECT i.id_libro, MIN(i.id_imagen) AS id_imagen
         FROM imagen_libro i
         GROUP BY i.id_libro
     ) img_min ON img_min.id_libro = l.id_libro
     LEFT JOIN imagen_libro img ON img.id_imagen = img_min.id_imagen
-    WHERE l.disponible = TRUE
-      AND (p_query IS NULL OR l.titulo LIKE CONCAT('%', p_query, '%') OR l.autor LIKE CONCAT('%', p_query, '%'))
+    WHERE (p_titulo IS NULL OR l.titulo LIKE CONCAT('%', p_titulo, '%'))
+      AND (p_autor IS NULL OR l.autor LIKE CONCAT('%', p_autor, '%'))
+      AND (p_id_categoria IS NULL OR l.id_categoria = p_id_categoria)
+      AND (p_estado IS NULL OR l.estado = p_estado)
     ORDER BY l.fecha_registro DESC
     LIMIT p_limit OFFSET p_offset;
-END //
+END $$
 DELIMITER ;
 
 -- =========================================
--- M√ìDULO SOLICITUD: sp_crear_solicitud
+-- M”DULO LIBRO: sp_vincular_imagen_libro
+-- =========================================
+DELIMITER $$
+CREATE PROCEDURE sp_vincular_imagen_libro(
+    IN p_id_libro INT,
+    IN p_url_imagen VARCHAR(500)
+)
+BEGIN
+    INSERT INTO imagen_libro (id_libro, url_imagen)
+    VALUES (p_id_libro, p_url_imagen);
+END $$
+DELIMITER ;
+
+-- =========================================
+-- M”DULO SOLICITUD: sp_crear_solicitud
 -- =========================================
 DELIMITER //
 CREATE PROCEDURE sp_crear_solicitud(
