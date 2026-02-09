@@ -6,12 +6,12 @@ import com.bardales.intercambiolibrosapi.dto.UsuarioUpdateDTO;
 import com.bardales.intercambiolibrosapi.entity.Usuario;
 import com.bardales.intercambiolibrosapi.exception.ResourceNotFoundException;
 import com.bardales.intercambiolibrosapi.exception.UnauthorizedException;
-import com.bardales.intercambiolibrosapi.repository.LoginResponseProjection;
 import com.bardales.intercambiolibrosapi.repository.UsuarioRepository;
 import com.bardales.intercambiolibrosapi.service.UsuarioService;
 
 import java.util.List;
 import java.util.Map;
+import java.util.UUID;
 
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.stereotype.Service;
@@ -29,13 +29,16 @@ public class UsuarioServiceImpl implements UsuarioService {
 
     @Override
     public LoginResponseDTO login(String correo, String password) {
-        LoginResponseProjection projection = usuarioRepository.validarLogin(correo, password)
-                .orElseThrow(() -> new ResourceNotFoundException("Credenciales inválidas"));
-        String urlFoto = projection.getUrl_foto();
-        if (urlFoto == null || urlFoto.isBlank()) {
-            urlFoto = "default_user.png";
+        List<Map<String, Object>> rows = jdbcTemplate.queryForList(
+                "CALL sp_login_usuario_app(?, ?)", correo, password);
+        if (rows.isEmpty()) {
+            throw new ResourceNotFoundException("Credenciales invalidas");
         }
-        return new LoginResponseDTO(projection.getNombres(), projection.getApellidos(), urlFoto);
+        Map<String, Object> row = rows.get(0);
+        Number idUsuario = (Number) row.get("id_usuario");
+        String nombre = row.get("nombre") == null ? null : row.get("nombre").toString();
+        String token = UUID.randomUUID().toString();
+        return new LoginResponseDTO(idUsuario == null ? null : idUsuario.intValue(), nombre, token);
     }
 
     @Override
