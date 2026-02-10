@@ -27,7 +27,12 @@ public class AuthController {
     @PostMapping("/api/usuarios/login")
     public ResponseEntity<LoginResponseDTO> login(@RequestBody LoginRequestDTO request) {
         LOGGER.info("Peticion de login recibida para el usuario: {}", request.getCorreo());
-        LoginResponseDTO response = usuarioService.login(request.getCorreo(), request.getPassword());
-        return ResponseEntity.ok(response);
+        try {
+            LoginResponseDTO response = usuarioService.login(request.getCorreo(), request.getPassword());
+            return ResponseEntity.ok(response);
+        } catch (Exception e) {
+            e.printStackTrace();
+            throw e;
+        }
     }
 }

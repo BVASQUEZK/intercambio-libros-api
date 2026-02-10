@@ -35,8 +35,13 @@ public class UsuarioAuthController {
                 || dni == null || dni.isBlank()) {
             throw new IllegalArgumentException("Faltan campos obligatorios");
         }
-        java.util.Map<String, Object> response = usuarioService.registrarUsuario(
-                nombres, apellidos, correo, clave, dni);
-        return ResponseEntity.status(201).body(response);
+        try {
+            java.util.Map<String, Object> response = usuarioService.registrarUsuario(
+                    nombres, apellidos, correo, clave, dni);
+            return ResponseEntity.status(201).body(response);
+        } catch (Exception e) {
+            e.printStackTrace();
+            throw e;
+        }
     }
 }
