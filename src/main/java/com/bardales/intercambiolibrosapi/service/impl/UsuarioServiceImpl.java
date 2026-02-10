@@ -91,9 +91,9 @@ public class UsuarioServiceImpl implements UsuarioService {
     }
 
     @Override
-    public Map<String, Object> registrarUsuario(String nombre, String correo, String clave) {
+    public Map<String, Object> registrarUsuario(String nombres, String apellidos, String correo, String clave, String dni) {
         List<Map<String, Object>> rows = jdbcTemplate.queryForList(
-                "CALL sp_registrar_usuario_app(?, ?, ?)", nombre, correo, clave);
+                "CALL sp_registrar_usuario_app(?, ?, ?, ?, ?)", nombres, apellidos, correo, clave, dni);
         if (rows.isEmpty()) {
             throw new ResourceNotFoundException("No se pudo registrar el usuario");
         }

@@ -1,4 +1,4 @@
--- =========================================
+﻿-- =========================================
 -- TODOS LOS SP DE LIBRO
 -- =========================================
 
@@ -41,8 +41,13 @@ BEGIN
     SELECT l.id_libro AS id_libro,
            l.titulo AS titulo,
            l.autor AS autor,
+           l.descripcion AS descripcion,
+           c.nombre AS nombre_categoria,
+           CONCAT(u.nombres, ' ', u.apellidos) AS nombre_usuario_propietario,
            img.url_imagen AS url_portada
     FROM libro l
+    INNER JOIN usuario u ON u.id_usuario = l.id_usuario
+    LEFT JOIN categoria c ON c.id_categoria = l.id_categoria
     LEFT JOIN (
         SELECT i.id_libro, MIN(i.id_imagen) AS id_imagen
         FROM imagen_libro i
@@ -55,7 +60,7 @@ END $$
 DELIMITER ;
 
 -- =========================================
--- SP: Buscar Libros con Filtros (B�squeda)
+-- SP: Buscar Libros con Filtros (Búsqueda)
 -- =========================================
 DROP PROCEDURE IF EXISTS sp_buscar_libros_filtros;
 DELIMITER $$
@@ -71,8 +76,13 @@ BEGIN
     SELECT l.id_libro AS id_libro,
            l.titulo AS titulo,
            l.autor AS autor,
+           l.descripcion AS descripcion,
+           c.nombre AS nombre_categoria,
+           CONCAT(u.nombres, ' ', u.apellidos) AS nombre_usuario_propietario,
            img.url_imagen AS url_portada
     FROM libro l
+    INNER JOIN usuario u ON u.id_usuario = l.id_usuario
+    LEFT JOIN categoria c ON c.id_categoria = l.id_categoria
     LEFT JOIN (
         SELECT i.id_libro, MIN(i.id_imagen) AS id_imagen
         FROM imagen_libro i
@@ -102,3 +112,4 @@ BEGIN
     VALUES (p_id_libro, p_url_imagen);
 END $$
 DELIMITER ;
+

@@ -9,5 +9,5 @@ public interface UsuarioService {
     LoginResponseDTO login(String correo, String password);
     PerfilUsuarioDTO obtenerPerfil(int idUsuario);
     LoginResponseDTO actualizarPerfil(int idUsuarioHeader, UsuarioUpdateDTO dto);
-    Map<String, Object> registrarUsuario(String nombre, String correo, String clave);
+    Map<String, Object> registrarUsuario(String nombres, String apellidos, String correo, String clave, String dni);
 }

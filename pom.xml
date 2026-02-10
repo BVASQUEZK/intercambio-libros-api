@@ -55,10 +55,14 @@
 	</dependencies>
 
 	<build>
+		<finalName>intercambiolibrosapi</finalName>
 		<plugins>
 			<plugin>
 				<groupId>org.springframework.boot</groupId>
 				<artifactId>spring-boot-maven-plugin</artifactId>
+				<configuration>
+					<mainClass>com.bardales.intercambiolibrosapi.IntercambiolibrosapiApplication</mainClass>
+				</configuration>
 			</plugin>
 			<plugin>
 				<groupId>org.apache.maven.plugins</groupId>
