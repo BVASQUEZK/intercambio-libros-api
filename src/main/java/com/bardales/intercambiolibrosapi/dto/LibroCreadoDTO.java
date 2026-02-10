@@ -2,42 +2,55 @@ package com.bardales.intercambiolibrosapi.dto;
 
 import java.util.List;
 
-import jakarta.validation.constraints.NotBlank;
-import jakarta.validation.constraints.NotEmpty;
-import jakarta.validation.constraints.NotNull;
-
-public class LibroRegistroDTO {
-    @NotBlank
-    private String titulo;
-
-    @NotBlank
-    private String autor;
-
-    private String descripcion;
-
-    @NotBlank
-    private String estado;
-
-    @NotBlank
-    private String ubicacion;
-
+public class LibroCreadoDTO {
+    private Integer idLibro;
+    private Integer idUsuario;
     private Integer idCategoria;
-
-    @NotEmpty
+    private String titulo;
+    private String autor;
+    private String descripcion;
+    private String estado;
+    private String ubicacion;
     private List<String> urlsImagenes;
 
-    public LibroRegistroDTO() {
+    public LibroCreadoDTO() {
     }
 
-    public LibroRegistroDTO(String titulo, String autor, String descripcion, String estado, String ubicacion,
-            Integer idCategoria, List<String> urlsImagenes) {
+    public LibroCreadoDTO(Integer idLibro, Integer idUsuario, Integer idCategoria, String titulo, String autor,
+            String descripcion, String estado, String ubicacion, List<String> urlsImagenes) {
+        this.idLibro = idLibro;
+        this.idUsuario = idUsuario;
+        this.idCategoria = idCategoria;
         this.titulo = titulo;
         this.autor = autor;
         this.descripcion = descripcion;
         this.estado = estado;
         this.ubicacion = ubicacion;
-        this.idCategoria = idCategoria;
         this.urlsImagenes = urlsImagenes;
+    }
+
+    public Integer getIdLibro() {
+        return idLibro;
+    }
+
+    public void setIdLibro(Integer idLibro) {
+        this.idLibro = idLibro;
+    }
+
+    public Integer getIdUsuario() {
+        return idUsuario;
+    }
+
+    public void setIdUsuario(Integer idUsuario) {
+        this.idUsuario = idUsuario;
+    }
+
+    public Integer getIdCategoria() {
+        return idCategoria;
+    }
+
+    public void setIdCategoria(Integer idCategoria) {
+        this.idCategoria = idCategoria;
     }
 
     public String getTitulo() {
@@ -78,14 +91,6 @@ public class LibroRegistroDTO {
 
     public void setUbicacion(String ubicacion) {
         this.ubicacion = ubicacion;
-    }
-
-    public Integer getIdCategoria() {
-        return idCategoria;
-    }
-
-    public void setIdCategoria(Integer idCategoria) {
-        this.idCategoria = idCategoria;
     }
 
     public List<String> getUrlsImagenes() {

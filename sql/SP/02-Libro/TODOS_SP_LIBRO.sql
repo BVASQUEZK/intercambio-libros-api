@@ -14,12 +14,13 @@ CREATE PROCEDURE sp_registrar_libro(
     IN p_autor VARCHAR(150),
     IN p_descripcion TEXT,
     IN p_estado ENUM('nuevo','muy bueno','bueno','aceptable'),
+    IN p_ubicacion VARCHAR(255),
     IN p_url_imagen VARCHAR(500),
     OUT p_id_libro INT
 )
 BEGIN
-    INSERT INTO libro (id_usuario, id_categoria, titulo, autor, descripcion, estado)
-    VALUES (p_id_usuario, p_id_categoria, p_titulo, p_autor, p_descripcion, p_estado);
+    INSERT INTO libro (id_usuario, id_categoria, titulo, autor, descripcion, estado, ubicacion)
+    VALUES (p_id_usuario, p_id_categoria, p_titulo, p_autor, p_descripcion, p_estado, p_ubicacion);
 
     SET p_id_libro = LAST_INSERT_ID();
 

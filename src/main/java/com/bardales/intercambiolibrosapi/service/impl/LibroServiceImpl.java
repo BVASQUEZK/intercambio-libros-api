@@ -6,6 +6,7 @@ import java.util.stream.Collectors;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import com.bardales.intercambiolibrosapi.dto.LibroCreadoDTO;
 import com.bardales.intercambiolibrosapi.dto.LibroDTO;
 import com.bardales.intercambiolibrosapi.dto.LibroHomeDTO;
 import com.bardales.intercambiolibrosapi.dto.LibroRegistroDTO;
@@ -50,7 +51,7 @@ public class LibroServiceImpl implements LibroService {
 
     @Override
     @Transactional
-    public Integer registrarLibro(LibroRegistroDTO dto) {
+    public LibroCreadoDTO registrarLibro(int idUsuario, LibroRegistroDTO dto) {
         String primeraUrl = null;
         if (dto.getUrlsImagenes() != null) {
             for (String url : dto.getUrlsImagenes()) {
@@ -62,13 +63,16 @@ public class LibroServiceImpl implements LibroService {
             }
         }
 
+        String estadoNormalizado = normalizarEstado(dto.getEstado());
+
         Integer idLibro = libroRepository.registrarLibro(
-                dto.getIdUsuario(),
+                idUsuario,
                 dto.getIdCategoria(),
                 dto.getTitulo(),
                 dto.getAutor(),
                 dto.getDescripcion(),
-                dto.getEstado(),
+                estadoNormalizado,
+                dto.getUbicacion(),
                 primeraUrl
         );
         if (idLibro == null || idLibro <= 0) {
@@ -89,7 +93,17 @@ public class LibroServiceImpl implements LibroService {
             }
         }
 
-        return idLibro;
+        return new LibroCreadoDTO(
+                idLibro,
+                idUsuario,
+                dto.getIdCategoria(),
+                dto.getTitulo(),
+                dto.getAutor(),
+                dto.getDescripcion(),
+                estadoNormalizado,
+                dto.getUbicacion(),
+                dto.getUrlsImagenes()
+        );
     }
 
     private LibroHomeDTO toDto(LibroHomeProjection p) {
@@ -109,5 +123,19 @@ public class LibroServiceImpl implements LibroService {
                 p.getAutor(),
                 p.getUrl_portada()
         );
+    }
+
+    private String normalizarEstado(String estado) {
+        if (estado == null) {
+            return null;
+        }
+        String value = estado.trim().toLowerCase();
+        if (value.isBlank()) {
+            return null;
+        }
+        if ("como nuevo".equals(value)) {
+            return "muy bueno";
+        }
+        return value;
     }
 }

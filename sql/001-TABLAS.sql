@@ -53,6 +53,7 @@ CREATE TABLE libro (
     autor VARCHAR(150),
     descripcion TEXT,
     estado ENUM('nuevo','muy bueno','bueno','aceptable'),
+    ubicacion VARCHAR(255),
     disponible BOOLEAN DEFAULT TRUE,
     fecha_registro DATETIME DEFAULT CURRENT_TIMESTAMP,
     FOREIGN KEY (id_usuario) REFERENCES usuario(id_usuario),

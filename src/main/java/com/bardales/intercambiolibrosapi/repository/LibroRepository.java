@@ -31,6 +31,7 @@ public interface LibroRepository extends JpaRepository<Libro, Integer> {
             @Param("p_autor") String autor,
             @Param("p_descripcion") String descripcion,
             @Param("p_estado") String estado,
+            @Param("p_ubicacion") String ubicacion,
             @Param("p_url_imagen") String urlImagen);
 
     @Query(value = "CALL sp_vincular_imagen_libro(:idLibro, :urlImagen)", nativeQuery = true)

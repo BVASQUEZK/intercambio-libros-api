@@ -1,17 +1,18 @@
 package com.bardales.intercambiolibrosapi.controller;
 
 import java.util.List;
-import java.util.Map;
 
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestHeader;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.bardales.intercambiolibrosapi.dto.LibroCreadoDTO;
 import com.bardales.intercambiolibrosapi.dto.LibroDTO;
 import com.bardales.intercambiolibrosapi.dto.LibroHomeDTO;
 import com.bardales.intercambiolibrosapi.dto.LibroRegistroDTO;
@@ -48,9 +49,10 @@ public class LibroController {
     }
 
     @PostMapping("/registrar")
-    public ResponseEntity<Map<String, Object>> registrarLibro(@Valid @RequestBody LibroRegistroDTO dto) {
-        Integer idLibro = libroService.registrarLibro(dto);
-        return ResponseEntity.status(201)
-                .body(Map.of("mensaje", "Libro registrado correctamente", "id_libro", idLibro));
+    public ResponseEntity<LibroCreadoDTO> registrarLibro(
+            @RequestHeader("X-User-Id") int idUsuario,
+            @Valid @RequestBody LibroRegistroDTO dto) {
+        LibroCreadoDTO libro = libroService.registrarLibro(idUsuario, dto);
+        return ResponseEntity.status(201).body(libro);
     }
 }

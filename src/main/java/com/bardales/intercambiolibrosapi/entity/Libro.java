@@ -46,6 +46,9 @@ public class Libro {
     @Column(name = "estado")
     private String estado;
 
+    @Column(name = "ubicacion")
+    private String ubicacion;
+
     @Column(name = "disponible")
     private Boolean disponible;
 
@@ -59,7 +62,7 @@ public class Libro {
     }
 
     public Libro(Integer idLibro, Integer idUsuario, Categoria categoria, String titulo, String autor,
-            String descripcion, String estado, Boolean disponible, LocalDateTime fechaRegistro,
+            String descripcion, String estado, String ubicacion, Boolean disponible, LocalDateTime fechaRegistro,
             List<ImagenLibro> imagenes) {
         this.idLibro = idLibro;
         this.idUsuario = idUsuario;
@@ -68,6 +71,7 @@ public class Libro {
         this.autor = autor;
         this.descripcion = descripcion;
         this.estado = estado;
+        this.ubicacion = ubicacion;
         this.disponible = disponible;
         this.fechaRegistro = fechaRegistro;
         this.imagenes = imagenes;
@@ -127,6 +131,14 @@ public class Libro {
 
     public void setEstado(String estado) {
         this.estado = estado;
+    }
+
+    public String getUbicacion() {
+        return ubicacion;
+    }
+
+    public void setUbicacion(String ubicacion) {
+        this.ubicacion = ubicacion;
     }
 
     public Boolean getDisponible() {
